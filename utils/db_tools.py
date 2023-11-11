@@ -2,6 +2,13 @@ import psycopg2
 
 
 def create_database(database_name: str, params: dict):
+    """
+    Создает базу данных и таблицы.
+    Args:
+        database_name (str): Имя создаваемой базы данных.
+        params (dict): Словарь с параметрами подключения к базе данных.
+    """
+
     conn = psycopg2.connect(dbname='postgres', **params)
     conn.autocommit = True
     cur = conn.cursor()
@@ -43,6 +50,14 @@ def create_database(database_name: str, params: dict):
 
 
 def fill_database(data, database_name, params: dict):
+    """
+    Заполняет базу данных данными о работодателях и вакансиях.
+    Args:
+        data (list): Список словарей с данными о работодателях и вакансиях.
+        database_name (str): Имя базы данных.
+        params (dict): Словарь с параметрами подключения к базе данных.
+    """
+
     conn = psycopg2.connect(dbname=database_name, **params)
 
     if data[0]['vacancies']:
