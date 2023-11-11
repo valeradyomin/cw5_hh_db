@@ -34,3 +34,17 @@ class DBManager:
         self.conn.close()
         return data
 
+    def get_avg_salary(self):
+        try:
+            with self.conn:
+                self.cur.execute("SELECT employer_name, ROUND(AVG(average_salary)) AS employer_avg_salary "
+                                 "FROM employers "
+                                 "JOIN vacancies USING(employer_id) "
+                                 "GROUP BY employer_name "
+                                 "ORDER BY employer_avg_salary DESC;")
+                data = self.cur.fetchall()
+        except (Exception, psycopg2.DatabaseError) as error:
+            print(error)
+        self.conn.close()
+        return data
+
