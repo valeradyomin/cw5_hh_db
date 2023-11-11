@@ -6,11 +6,23 @@ warnings.filterwarnings("ignore", category=UserWarning)
 
 
 class HeadHunter:
+    """Класс для работы с API HeadHunter."""
+
     def __init__(self, employer_id_url):
+        """
+        Инициализация объекта класса HeadHunter.
+        Args:
+            employer_id_url (str): URL-адрес работодателя в API HeadHunter.
+        """
         self.employer_id_url = employer_id_url
         self.headers = {'User-Agent': 'api-test-agent'}
 
     def check_connect(self):
+        """
+        Проверка соединения с API HeadHunter.
+        Returns:
+            bool: True, если соединение успешно установлено, иначе False.
+        """
         check = requests.get(url=self.employer_id_url, headers=self.headers)
         if check.status_code == requests.codes.ok:
             print(f"соединение с {__class__.__name__} успешно установлено.")
@@ -21,10 +33,22 @@ class HeadHunter:
             exit()
 
     def get_employer(self):
+        """
+        Получение данных о работодателе.
+        Returns:
+            dict: Словарь с данными о работодателе.
+        """
         raw_data = requests.get(url=self.employer_id_url, headers=self.headers).json()
         return raw_data
 
     def get_format_employer(self, raw_data):
+        """
+        Форматирование данных о работодателе.
+        Args:
+            raw_data (dict): Словарь с данными о работодателе.
+        Returns:
+            dict: Словарь с отформатированными данными о работодателе.
+        """
         fixed = {
             "name": raw_data.get("name", None),
             "description": self.clean_text(raw_data.get("description", None)),
@@ -33,6 +57,13 @@ class HeadHunter:
         return fixed
 
     def get_vacancies(self, employer_raw_data):
+        """
+        Получение списка вакансий работодателя.
+        Args:
+            employer_raw_data (dict): Словарь с данными о работодателе.
+        Returns:
+            list: Список словарей с данными о вакансиях.
+        """
         url = employer_raw_data.get("vacancies_url", None)
         all_vacancies = []
         page = 0
@@ -55,6 +86,13 @@ class HeadHunter:
         return all_vacancies
 
     def get_format_vacancies(self, raw_data):
+        """
+        Форматирование данных о вакансиях.
+        Args:
+            raw_data (list): Список словарей с данными о вакансиях.
+        Returns:
+            list: Список словарей с отформатированными данными о вакансиях.
+        """
         result = []
         for data in raw_data:
             fixed = {
@@ -71,6 +109,13 @@ class HeadHunter:
 
     @staticmethod
     def clean_text(string):
+        """
+        Очистка текста от HTML-тегов и лишних символов.
+        Args:
+            string (str): Исходный текст.
+        Returns:
+            str: Очищенный текст.
+        """
         if string:
             soup = BeautifulSoup(string, 'html.parser')
             clean_text = soup.get_text()
@@ -86,6 +131,13 @@ class HeadHunter:
 
     @staticmethod
     def get_average_salary(data):
+        """
+        Вычисление средней зарплаты.
+        Args:
+            data (dict): Словарь с данными о вакансии.
+        Returns:
+            float: Средняя зарплата.
+        """
         salary_from = data.get("salary", {}).get("from", 0)
         salary_to = data.get("salary", {}).get("to", 0)
         if salary_from is None:
@@ -97,6 +149,13 @@ class HeadHunter:
 
     @staticmethod
     def format_currency(data):
+        """
+        Форматирование валюты.
+        Args:
+            data (dict): Словарь с данными о вакансии.
+        Returns:
+            str: Отформатированная валюта.
+        """
         currency = data.get("salary", {}).get("currency", 0)
         if currency in ("RUR", "rub"):
             upd_currency = "руб."
@@ -105,6 +164,11 @@ class HeadHunter:
             return data.get("salary", None).get("currency", None)
 
     def get_unite_data_for_db(self):
+        """
+        Получение объединенных данных для записи в базу данных.
+        Returns:
+            list: Список словарей с объединенными данными.
+        """
         unite_data_for_db = []
         employer_raw_data = self.get_employer()
         vacancies_raw_data = self.get_vacancies(employer_raw_data)
