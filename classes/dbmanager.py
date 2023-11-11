@@ -62,3 +62,16 @@ class DBManager:
         self.conn.close()
         return data
 
+    def get_vacancies_with_keyword(self, keyword):
+        try:
+            with self.conn:
+                self.cur.execute(f"""SELECT *
+                                 FROM vacancies
+                                 WHERE lower(vacancy_name) LIKE '%{keyword}%'
+                                 OR lower(vacancy_name) LIKE '%{keyword}'
+                                 OR lower(vacancy_name) LIKE '{keyword}%'""")
+                data = self.cur.fetchall()
+        except (Exception, psycopg2.DatabaseError) as error:
+            print(error)
+        self.conn.close()
+        return data
