@@ -32,6 +32,28 @@ class HeadHunter:
         }
         return fixed
 
+    def get_vacancies(self, employer_raw_data):
+        url = employer_raw_data.get("vacancies_url", None)
+        all_vacancies = []
+        page = 0
+        per_page = 100
+        while True:
+            page += 1
+            params = {
+                "per_page": per_page,
+                "page": page,
+                "only_with_salary": True,
+            }
+            vacancies_data = requests.get(url=url, headers=self.headers, params=params).json()
+            if "items" in vacancies_data:
+                vacancies = vacancies_data["items"]
+                all_vacancies.extend(vacancies)
+                if len(vacancies) < per_page:
+                    break
+            else:
+                break
+        return all_vacancies
+
     @staticmethod
     def clean_text(string):
         if string:
