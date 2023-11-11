@@ -115,11 +115,3 @@ class HeadHunter:
         }
         unite_data_for_db.append(united_dict)
         return unite_data_for_db
-
-
-hh = HeadHunter("https://api.hh.ru/employers/23427")
-hh.check_connect()
-# print(hh.get_format_employer(hh.get_employer()))
-# print(hh.get_vacancies(hh.get_employer()))
-# print(hh.get_format_vacancies(hh.get_vacancies(hh.get_employer())))
-print(hh.get_unite_data_for_db())
