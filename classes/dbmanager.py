@@ -22,4 +22,15 @@ class DBManager:
         self.conn.close()
         return data
 
+    def get_all_vacancies(self):
+        try:
+            with self.conn:
+                self.cur.execute("SELECT employer_name, vacancy_name, average_salary, vacancy_url "
+                                 "FROM employers "
+                                 "JOIN vacancies USING(employer_id)")
+                data = self.cur.fetchall()
+        except (Exception, psycopg2.DatabaseError) as error:
+            print(error)
+        self.conn.close()
+        return data
 
