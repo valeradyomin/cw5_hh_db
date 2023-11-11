@@ -48,3 +48,17 @@ class DBManager:
         self.conn.close()
         return data
 
+    def get_vacancies_with_higher_salary(self):
+        try:
+            with self.conn:
+                self.cur.execute("SELECT employer_name, vacancy_name, average_salary "
+                                 "FROM vacancies "
+                                 "JOIN employers USING(employer_id) "
+                                 "WHERE average_salary > (SELECT ROUND(AVG(average_salary)) FROM vacancies) "
+                                 "ORDER BY average_salary DESC")
+                data = self.cur.fetchall()
+        except (Exception, psycopg2.DatabaseError) as error:
+            print(error)
+        self.conn.close()
+        return data
+
