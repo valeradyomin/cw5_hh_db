@@ -43,7 +43,8 @@ def create_database(database_name: str, params: dict):
 
 
 def fill_database(data, database_name, params: dict):
-
+    info = data[0]["employer"]["name"]
+    print(f"Заполняю базу данных от компании: {info}")
     conn = psycopg2.connect(dbname=database_name, **params)
 
     with conn.cursor() as cur:
