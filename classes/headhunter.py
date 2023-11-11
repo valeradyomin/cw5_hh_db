@@ -102,11 +102,24 @@ class HeadHunter:
             upd_currency = "руб."
             return upd_currency
         else:
-            return data.get("salary", None).get("currency", None),
+            return data.get("salary", None).get("currency", None)
+
+    def get_unite_data_for_db(self):
+        unite_data_for_db = []
+        employer_raw_data = self.get_employer()
+        vacancies_raw_data = self.get_vacancies(employer_raw_data)
+
+        united_dict = {
+            "employer": self.get_format_employer(employer_raw_data),
+            "vacancies": self.get_format_vacancies(vacancies_raw_data),
+        }
+        unite_data_for_db.append(united_dict)
+        return unite_data_for_db
 
 
 hh = HeadHunter("https://api.hh.ru/employers/23427")
 hh.check_connect()
 # print(hh.get_format_employer(hh.get_employer()))
 # print(hh.get_vacancies(hh.get_employer()))
-print(hh.get_format_vacancies(hh.get_vacancies(hh.get_employer())))
+# print(hh.get_format_vacancies(hh.get_vacancies(hh.get_employer())))
+print(hh.get_unite_data_for_db())
