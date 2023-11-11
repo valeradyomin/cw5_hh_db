@@ -16,7 +16,7 @@ def main():
                          "https://api.hh.ru/employers/3776",  # МТС
                          "https://api.hh.ru/employers/89117",  # Триколор
                          "https://api.hh.ru/employers/1942336",  # Перекресток
-                         "https://api.hh.ru/employers/4219"]  # Tele2
+                         "https://api.hh.ru/employers/907345"]  # ЛУКОЙЛ
 
     create_database("headhunter", params)
 
@@ -28,7 +28,11 @@ def main():
         fill_database(hh.get_unite_data_for_db(), "headhunter", params)
 
     db = DBManager("headhunter")
-    print(db.get_companies_and_vacancies_count())
+    # print(db.get_companies_and_vacancies_count())
+    # print(db.get_all_vacancies())
+    # print(db.get_avg_salary())
+    # print(db.get_vacancies_with_higher_salary())
+    print(db.get_vacancies_with_keyword("devops"))
 
 
 if __name__ == '__main__':
