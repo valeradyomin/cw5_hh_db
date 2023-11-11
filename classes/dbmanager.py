@@ -45,37 +45,37 @@ class DBManager:
         self.conn.close()
         return data
 
-    def get_avg_salary(self):
+    def get_avg_salary(self, currency="руб."):
         """
-        Получение средней зарплаты для каждого работодателя.
+        Получение средней зарплаты для каждого работодателя с учетом валюты(по дефолту рубли).
         """
         try:
             with self.conn:
-                self.cur.execute("SELECT employer_name, ROUND(AVG(average_salary)) AS employer_avg_salary "
-                                 "FROM employers "
-                                 "JOIN vacancies USING(employer_id) "
-                                 "WHERE currency = 'руб.' "
-                                 "GROUP BY employer_name "
-                                 "ORDER BY employer_avg_salary DESC;")
+                self.cur.execute(f"""SELECT employer_name, ROUND(AVG(average_salary)) AS employer_avg_salary
+                                 FROM employers
+                                 JOIN vacancies USING(employer_id)
+                                 WHERE currency = '{currency}'
+                                 GROUP BY employer_name
+                                 ORDER BY employer_avg_salary DESC""")
                 data = self.cur.fetchall()
         except (Exception, psycopg2.DatabaseError) as error:
             print(error)
         self.conn.close()
         return data
 
-    def get_vacancies_with_higher_salary(self):
+    def get_vacancies_with_higher_salary(self, currency="руб."):
         """
-        Получает список всех вакансий, у которых зарплата выше средней по всем вакансиям.
+        Получает список всех вакансий, у которых зарплата(по дефолту рубли) выше средней по всем вакансиям.
         """
         try:
             with self.conn:
-                self.cur.execute("SELECT employer_name, vacancy_name, average_salary "
-                                 "FROM vacancies "
-                                 "JOIN employers USING(employer_id) "
-                                 "WHERE vacancies.currency = 'руб.' "
-                                 "GROUP BY employer_name, vacancy_name, average_salary "
-                                 "HAVING average_salary > (SELECT ROUND(AVG(average_salary)) FROM vacancies) "
-                                 "ORDER BY average_salary DESC")
+                self.cur.execute(f"""SELECT employer_name, vacancy_name, average_salary
+                                 FROM vacancies
+                                 JOIN employers USING(employer_id)
+                                 WHERE vacancies.currency = '{currency}'
+                                 GROUP BY employer_name, vacancy_name, average_salary
+                                 HAVING average_salary > (SELECT ROUND(AVG(average_salary)) FROM vacancies)
+                                 ORDER BY average_salary DESC""")
                 data = self.cur.fetchall()
         except (Exception, psycopg2.DatabaseError) as error:
             print(error)
