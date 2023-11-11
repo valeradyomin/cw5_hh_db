@@ -54,6 +54,21 @@ class HeadHunter:
                 break
         return all_vacancies
 
+    def get_format_vacancies(self, raw_data):
+        result = []
+        for data in raw_data:
+            fixed = {
+                "title": data.get("name", None),
+                "url": data.get("alternate_url", None),
+                "salary_from": data.get("salary", None).get("from", None),
+                "salary_to": data.get("salary", None).get("to", None),
+                "average_salary": self.get_average_salary(data),
+                "currency": self.format_currency(data),
+                "requirement": self.clean_text(data.get("snippet", None).get("requirement", None)),
+            }
+            result.append(fixed)
+        return result
+
     @staticmethod
     def clean_text(string):
         if string:
@@ -69,7 +84,29 @@ class HeadHunter:
         else:
             return string
 
+    @staticmethod
+    def get_average_salary(data):
+        salary_from = data.get("salary", {}).get("from", 0)
+        salary_to = data.get("salary", {}).get("to", 0)
+        if salary_from is None:
+            salary_from = 0
+        if salary_to is None:
+            salary_to = 0
+        average_salary = (salary_from + salary_to) / 2
+        return round(average_salary)
+
+    @staticmethod
+    def format_currency(data):
+        currency = data.get("salary", {}).get("currency", 0)
+        if currency in ("RUR", "rub"):
+            upd_currency = "руб."
+            return upd_currency
+        else:
+            return data.get("salary", None).get("currency", None),
+
 
 hh = HeadHunter("https://api.hh.ru/employers/23427")
 hh.check_connect()
-print(hh.get_format_employer(hh.get_employer()))
+# print(hh.get_format_employer(hh.get_employer()))
+# print(hh.get_vacancies(hh.get_employer()))
+print(hh.get_format_vacancies(hh.get_vacancies(hh.get_employer())))
