@@ -14,7 +14,8 @@ class DBManager:
                 self.cur.execute("SELECT employer_name, COUNT(employer_id) AS vacancies_count "
                                  "FROM employers "
                                  "JOIN vacancies USING(employer_id) "
-                                 "GROUP BY employer_id")
+                                 "GROUP BY employer_id "
+                                 "ORDER BY employer_id")
                 data = self.cur.fetchall()
         except (Exception, psycopg2.DatabaseError) as error:
             print(error)
