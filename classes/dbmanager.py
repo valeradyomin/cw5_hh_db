@@ -54,6 +54,7 @@ class DBManager:
                 self.cur.execute("SELECT employer_name, ROUND(AVG(average_salary)) AS employer_avg_salary "
                                  "FROM employers "
                                  "JOIN vacancies USING(employer_id) "
+                                 "WHERE currency = 'руб.' "
                                  "GROUP BY employer_name "
                                  "ORDER BY employer_avg_salary DESC;")
                 data = self.cur.fetchall()
@@ -71,7 +72,9 @@ class DBManager:
                 self.cur.execute("SELECT employer_name, vacancy_name, average_salary "
                                  "FROM vacancies "
                                  "JOIN employers USING(employer_id) "
-                                 "WHERE average_salary > (SELECT ROUND(AVG(average_salary)) FROM vacancies) "
+                                 "WHERE vacancies.currency = 'руб.' "
+                                 "GROUP BY employer_name, vacancy_name, average_salary "
+                                 "HAVING average_salary > (SELECT ROUND(AVG(average_salary)) FROM vacancies) "
                                  "ORDER BY average_salary DESC")
                 data = self.cur.fetchall()
         except (Exception, psycopg2.DatabaseError) as error:
