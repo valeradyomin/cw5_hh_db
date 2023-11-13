@@ -27,7 +27,7 @@ class DBManager:
                 data = self.cur.fetchall()
         except (Exception, psycopg2.DatabaseError) as error:
             print(error)
-        self.conn.close()
+        # self.conn.close()
         return data
 
     def get_all_vacancies(self):
@@ -42,7 +42,7 @@ class DBManager:
                 data = self.cur.fetchall()
         except (Exception, psycopg2.DatabaseError) as error:
             print(error)
-        self.conn.close()
+        # self.conn.close()
         return data
 
     def get_avg_salary(self, currency="руб."):
@@ -60,7 +60,7 @@ class DBManager:
                 data = self.cur.fetchall()
         except (Exception, psycopg2.DatabaseError) as error:
             print(error)
-        self.conn.close()
+        # self.conn.close()
         return data
 
     def get_vacancies_with_higher_salary(self, currency="руб."):
@@ -79,7 +79,7 @@ class DBManager:
                 data = self.cur.fetchall()
         except (Exception, psycopg2.DatabaseError) as error:
             print(error)
-        self.conn.close()
+        # self.conn.close()
         return data
 
     def get_vacancies_with_keyword(self, keyword):
@@ -96,5 +96,5 @@ class DBManager:
                 data = self.cur.fetchall()
         except (Exception, psycopg2.DatabaseError) as error:
             print(error)
-        self.conn.close()
+        # self.conn.close()
         return data
