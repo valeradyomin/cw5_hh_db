@@ -28,11 +28,32 @@ def main():
         fill_database(hh.get_unite_data_for_db(), "headhunter", params)
 
     db = DBManager("headhunter")
-    print(db.get_companies_and_vacancies_count())
-    # print(db.get_all_vacancies())
-    # print(db.get_avg_salary())
-    # print(db.get_vacancies_with_higher_salary())
-    # print(db.get_vacancies_with_keyword("devops"))
+    while True:
+        print("\nМеню запросов:\n"
+              "1 - получает список всех компаний и количество вакансий у каждой компании\n"
+              "2 - получает список всех вакансий с указанием названия компании,"
+              "названия вакансии и зарплаты и ссылки на вакансию\n"
+              "3 - получает среднюю зарплату по вакансиям\n"
+              "4 - получает список всех вакансий, у которых зарплата выше средней по всем вакансиям\n"
+              "5 - получает список всех вакансий, в названии которых содержатся переданные в метод слова\n"
+              "0 - EXIT")
+        choice = input("\nУкажите вариант запроса\n")
+        if choice == "1":
+            print(db.get_companies_and_vacancies_count())
+        elif choice == "2":
+            print(db.get_all_vacancies())
+        elif choice == "3":
+            print(db.get_avg_salary())
+        elif choice == "4":
+            print(db.get_vacancies_with_higher_salary())
+        elif choice == "5":
+            keyword = input("\nУкажите ключевое слово\n")
+            print(db.get_vacancies_with_keyword(keyword))
+        elif choice == "0":
+            db.conn.close()
+            break
+        else:
+            print("Некорректный ввод, повторите ваш выбор.")
 
 
 if __name__ == '__main__':
